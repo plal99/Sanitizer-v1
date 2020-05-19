@@ -1,33 +1,33 @@
 #include <Arduino.h>
+const int pirPin = 2;
+const int motorPin = 3;
+const int fullPin = 7, halfPin = 8, qtrPin = 9;                          // pins of the level indicator
 
-int pirPin = 2;
-int motorPin = 3;
-int pirStat = 0, fullStat = 0, mediumStat = 0, bottomStat = 0;                                // status of the inputs
-int rVoltage = 100;                                                          // (1) pull down resistors ...  Reference voltage
-int full = 7, medium = 8, bottom = 9;                                                        // pins of the level indicator
+int pirStat = 0, fullStat = 0, halfStat = 0, qtrStat = 0; // status of the inputs
+int rVoltage = 100;   // (1) pull down resistors ...  Reference voltage
 
 unsigned int onTimeFull = 20;
-unsigned int onTimeMedium = 20;
-unsigned int onTimeBottom = 20;
+unsigned int onTimeHalf = 20;
+unsigned int onTimeQtr = 20;
 unsigned int offTime = 2000;
-unsigned int time[3] = {0, 0, 0}, normal_gap, Big_time;                           //(2)
+unsigned int time[3] = {0, 0, 0}, normal_gap, Big_time;  //(2)
 int count;
 
 void setup()
 {
   pinMode(pirPin, INPUT);
-  pinMode(full, INPUT);
-  pinMode(medium, INPUT);
-  pinMode(bottom, INPUT);
+  pinMode(fullPin, INPUT);
+  pinMode(halfPin, INPUT);
+  pinMode(qtrPin, INPUT);
   pinMode(motorPin, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop()
 {
-  fullStat = analogRead(full);
-  mediumStat = analogRead(medium); // Reads status of the pins and level indicators
-  bottomStat = analogRead(bottom);
+  fullStat = analogRead(fullPin);
+  halfStat = analogRead(halfPin); // Reads status of the pins and level indicators
+  qtrStat = analogRead(qtrPin);
   pirStat = digitalRead(pirPin);
 
   for (count = 0; count < 3; count++)
@@ -36,27 +36,27 @@ void loop()
     {
       time[count] = millis();
 			
-      if (fullStat > rVoltage && mediumStat > rVoltage && bottomStat > rVoltage)
+      if (fullStat > rVoltage && halfStat > rVoltage && qtrStat > rVoltage)
       {
         digitalWrite(motorPin, HIGH);
-        delay(onTimeFull);                                                                // When bottle is full level
+        delay(onTimeFull); // When bottle is full level
         Serial.println("Pumping at top level....");
         digitalWrite(motorPin, LOW);
       }
 
-      if (fullStat < rVoltage && mediumStat > rVoltage && bottomStat > rVoltage)
+      if (fullStat < rVoltage && halfStat > rVoltage && qtrStat > rVoltage)
       {
         digitalWrite(motorPin, HIGH);
-        delay(onTimeMedium);                                                                  // When bottle is medium level
-        Serial.println("Pumping at medium level.....");
+        delay(onTimeHalf); // When bottle is half level
+        Serial.println("Pumping at half level.....");
         digitalWrite(motorPin, LOW);
       }
 
-      if (fullStat < rVoltage && mediumStat < rVoltage && bottomStat > rVoltage)
+      if (fullStat < rVoltage && halfStat < rVoltage && qtrStat > rVoltage)
       {
         digitalWrite(motorPin, HIGH);
-        delay(onTimeBottom);                                                                // When bottle is bottom level
-        Serial.println("Pumping at bottom level.....");
+        delay(onTimeQtr); // When bottle is qtr level
+        Serial.println("Pumping at qtr level.....");
         digitalWrite(motorPin, LOW);
       }
 
