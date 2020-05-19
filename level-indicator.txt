@@ -1,0 +1,20 @@
+The level indicators to be used in this project are mainly 4 wires : FULL, HALF, QTR, VCC.
+
+REF is reference voltage which helps to detect the level. The other 3 are the level indicators and VCC is the supply voltage. 
+
+--- WORKING ---
+The VCC wire will be at the most bottom of the container. The FULL,HALF,QTR wires will be at the corresponding positions on the container.
+The other end of VCC wire is connected to 5V of the arduino, and other ends of FULL, HALF, QTR is connected to ANALOG READ pins of arduino.
+Also the FULL,HALF,QTR are connected to pull up resistors to convert the correspoding changes in current to voltage.
+
+CASE-1 : 
+        When the container is full, the 5V is available at all of the FULL, HALF, QTR wires. So a HIGH is available at all the indicators
+        and this is compared to the REF voltage. So a full level is sensed. (FULL HALF QTR > REF voltage)
+       
+CASE-2 : 
+        When the container is half, the 5V is available at HALF, QTR wires. So a HIGH is available at 2 of the indicators
+        and this is compared to the REF voltage. So a half level is sensed. (The FULL pin gets < REF voltage)
+        
+CASE-3 :
+        When the container is half, the 5V is available at QTR wire only. So a HIGH is available at QTR indicator
+        and this is compared to the REF voltage. So a quater level is sensed. (The FULL and HALF pin gets < REF voltage)
